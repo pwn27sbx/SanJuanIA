@@ -159,7 +159,7 @@ export default function App() {
     setPrepError('');
     setPrepResult(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un asistente de atención al paciente de la Clínica San Juan de Dios Arequipa. Un paciente va a asistir a una cita de la especialidad de ${prepSpecialty} por el siguiente motivo: "${prepReason}". Genera una lista de preparación para su cita que incluya: 1) Documentos médicos que debería llevar (ej. exámenes de sangre previos, placas, lista de pastillas, etc). 2) Tres preguntas clave e inteligentes que el paciente debería hacerle al médico durante la consulta para aprovechar el tiempo. 3) Un breve consejo final empático en español.`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -218,7 +218,7 @@ export default function App() {
     setTermError('');
     setTermExplanation(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un educador en salud sumamente empático de la Clínica San Juan de Dios Arequipa. Un paciente está ansioso porque no entiende el siguiente término médico de sus recetas o exámenes: "${medicalTerm}". Explica qué significa este término en un lenguaje muy sencillo, cotidiano y tranquilizador (máximo 3 líneas). NUNCA des diagnósticos médicos. Añade una nota final recomendando consultar los resultados con su médico tratante.`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -276,7 +276,7 @@ export default function App() {
     setPrevError('');
     setPrevResult(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un médico preventivo muy empático de la Clínica San Juan de Dios Arequipa. Un paciente tiene ${prevAge} años, género ${prevGender}, y los siguientes antecedentes familiares o hábitos: "${prevHistory || 'Ninguno en particular'}". Sugiere estrictamente 3 exámenes médicos de rutina o chequeos preventivos que debería considerar este año. Para cada uno, da el nombre del examen y una breve justificación (1 línea) de por qué es importante a su edad. Incluye un mensaje motivador final. Aclara sutilmente que es una guía preventiva general.`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -343,7 +343,7 @@ export default function App() {
     setNutriError('');
     setNutriResult(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un nutricionista clínico empático de la Clínica San Juan de Dios Arequipa. Un paciente busca recomendaciones alimentarias generales para la siguiente condición, síntoma o situación de salud: "${nutriCondition}". Proporciona una guía nutricional básica en español. Devuelve SOLO un objeto JSON con: "recomendados" (lista de 3 alimentos o grupos de alimentos recomendados), "evitar" (lista de 3 alimentos o grupos a evitar), "consejo" (un consejo de estilo de vida en 2 líneas), y "disclaimer" (recordatorio breve y amable de agendar cita médica).`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -403,7 +403,7 @@ export default function App() {
     setPregError('');
     setPregResult(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un obstetra y acompañante maternal muy empático de la Clínica San Juan de Dios Arequipa. Una futura mamá tiene ${pregWeeks} semanas de embarazo y menciona que se siente: "${pregFeeling || 'emocionada pero con dudas'}". Genera una guía rápida y cálida. Devuelve SOLO un objeto JSON con: "tamano_bebe" (ej: 'El bebé tiene el tamaño de un limón'), "desarrollo" (1 línea sobre qué se está desarrollando en el bebé esta semana), "consejo" (consejo empático y práctico para la madre basado en cómo se siente), y "pregunta_medico" (una pregunta inteligente para hacerle a su obstetra en su próximo control).`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -463,7 +463,7 @@ export default function App() {
     setPedError('');
     setPedResult(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un pediatra empático de la Clínica San Juan de Dios Arequipa. Un padre/madre tiene un hijo de "${pedAge}" de edad y comenta lo siguiente sobre su desarrollo o comportamiento: "${pedMilestone}". Genera una guía rápida y tranquilizadora. Devuelve SOLO un objeto JSON con: "desarrollo" (explicación breve de lo que es normal a esta edad respecto a lo que comenta), "actividad" (un juego, tip o consejo práctico para estimularlo o ayudarlo en casa), y "consejo_medico" (recomendación amable de agendar su control de 'Niño Sano' o cita pediátrica).`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
