@@ -101,7 +101,7 @@ export default function App() {
     setError('');
     setAiRecommendation(null);
 
-    const apiKey = ""; // API Key proveída por el entorno
+    const apiKey = "AIzaSyCf7_VKhvyI9iOWR9TGD87QTWlw9T66WbI"; // API Key proveída por el entorno
     const promptText = `Actúa como un orientador médico empático de la Clínica San Juan de Dios Arequipa. Un paciente describe estos síntomas: "${symptoms}". Sugiere la especialidad médica más adecuada de esta lista: Medicina General, Pediatría, Cardiología, Gastroenterología, Traumatología, Ginecología, Neurología, Otorrinolaringología. Explica de manera breve, empática y en español por qué sugieres esta especialidad (máximo 2 líneas) invitándolo a agendar. NUNCA des un diagnóstico médico real.`;
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
