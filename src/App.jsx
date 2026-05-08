@@ -98,32 +98,32 @@ export default function App() {
   const mapLink = "https://maps.google.com/?q=Av.+Ejército+1020,+Cayma,+Arequipa";
 
     const analyzeSymptoms = async () => {
-    if (!symptoms.trim()) return;
-    setIsLoading(true);
-    setError('');
-    setAiRecommendation(null);
+        if (!symptoms.trim()) return;
+        setIsLoading(true);
+        setError('');
+        setAiRecommendation(null);
 
-    try {
-      // 1. Inicializamos la IA con la llave de Vercel
-      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        try {
+        // 1. Inicializamos la IA con la llave de Vercel
+        const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      // 2. Definimos el prompt
-      const promptText = `Actúa como un orientador médico empático de la Clínica San Juan de Dios Arequipa. Un paciente describe estos síntomas: "${symptoms}". Sugiere la especialidad médica adecuada (Medicina General, Pediatría, Cardiología, Gastroenterología, Traumatología, Ginecología, Neurología, Otorrinolaringología). Explica por qué brevemente. Devuelve un JSON válido con formato: {"especialidad": "nombre", "explicacion": "razon"}`;
+        // 2. Definimos el prompt
+        const promptText = `Actúa como un orientador médico empático de la Clínica San Juan de Dios Arequipa. Un paciente describe estos síntomas: "${symptoms}". Sugiere la especialidad médica adecuada (Medicina General, Pediatría, Cardiología, Gastroenterología, Traumatología, Ginecología, Neurología, Otorrinolaringología). Explica por qué brevemente. Devuelve un JSON válido con formato: {"especialidad": "nombre", "explicacion": "razon"}`;
 
-      // 3. Llamamos a la API
-      const result = await model.generateContent(promptText);
-      const responseText = result.response.text();
+        // 3. Llamamos a la API
+        const result = await model.generateContent(promptText);
+        const responseText = result.response.text();
 
-      // Limpiamos la respuesta en caso de que traiga comillas de Markdown
-      const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '');
+        // Limpiamos la respuesta en caso de que traiga comillas de Markdown
+        const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '');
 
-      setAiRecommendation(JSON.parse(cleanJson));
+        setAiRecommendation(JSON.parse(cleanJson));
 
-    } catch (err) {
-      console.error(err);
-      setError("Lo sentimos, no pudimos procesar tu consulta en este momento.");
-    }
+        } catch (err) {
+        console.error(err);
+        setError("Lo sentimos, no pudimos procesar tu consulta en este momento.");
+        }
     setIsLoading(false);
   };
   const generatePrepList = async () => {
