@@ -1,32 +1,59 @@
 import { useState, useEffect } from 'react';
 import {
-  Phone, Calendar, MapPin, Search, Menu, X, HeartPulse, Stethoscope, Baby,
-  Activity, ShieldCheck, Clock, Award, ArrowRight, MessageCircle,
-  AlertTriangle, Sparkles, Bot, ClipboardList, HelpCircle, CheckCircle2,
-  BookOpen, Info, ShieldPlus, Apple, Utensils, Star, Smile
+  Phone,
+  Calendar,
+  MapPin,
+  Search,
+  Menu,
+  X,
+  HeartPulse,
+  Stethoscope,
+  Baby,
+  Activity,
+  ShieldCheck,
+  Clock,
+  Award,
+  ArrowRight,
+  MessageCircle,
+  AlertTriangle,
+  Sparkles,
+  Bot,
+  ClipboardList,
+  HelpCircle,
+  CheckCircle2,
+  BookOpen,
+  Info,
+  ShieldPlus,
+  Apple,
+  Utensils,
+  Star,
+  Smile
 } from 'lucide-react';
 
 export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Estados de IA
+  // AI Feature States
   const [symptoms, setSymptoms] = useState('');
   const [aiRecommendation, setAiRecommendation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // New AI Feature States: Appointment Prep
   const [prepReason, setPrepReason] = useState('');
   const [prepSpecialty, setPrepSpecialty] = useState('');
   const [prepResult, setPrepResult] = useState(null);
   const [isPrepLoading, setIsPrepLoading] = useState(false);
   const [prepError, setPrepError] = useState('');
 
+  // New AI Feature States: Medical Dictionary
   const [medicalTerm, setMedicalTerm] = useState('');
   const [termExplanation, setTermExplanation] = useState(null);
   const [isTermLoading, setIsTermLoading] = useState(false);
   const [termError, setTermError] = useState('');
 
+  // New AI Feature States: Preventive Health Planner
   const [prevAge, setPrevAge] = useState('');
   const [prevGender, setPrevGender] = useState('Femenino');
   const [prevHistory, setPrevHistory] = useState('');
@@ -34,25 +61,31 @@ export default function App() {
   const [isPrevLoading, setIsPrevLoading] = useState(false);
   const [prevError, setPrevError] = useState('');
 
+  // New AI Feature States: Nutrition & Recovery
   const [nutriCondition, setNutriCondition] = useState('');
   const [nutriResult, setNutriResult] = useState(null);
   const [isNutriLoading, setIsNutriLoading] = useState(false);
   const [nutriError, setNutriError] = useState('');
 
+  // New AI Feature States: Maternity Companion
   const [pregWeeks, setPregWeeks] = useState('');
   const [pregFeeling, setPregFeeling] = useState('');
   const [pregResult, setPregResult] = useState(null);
   const [isPregLoading, setIsPregLoading] = useState(false);
   const [pregError, setPregError] = useState('');
 
+  // New AI Feature States: Pediatric Assistant
   const [pedAge, setPedAge] = useState('');
   const [pedMilestone, setPedMilestone] = useState('');
   const [pedResult, setPedResult] = useState(null);
   const [isPedLoading, setIsPedLoading] = useState(false);
   const [pedError, setPedError] = useState('');
 
+  // Handle scroll for sticky header shadow
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -96,83 +129,189 @@ export default function App() {
   };
 
   // ============================================================
-  // MANEJADORES DE IA
+  // MANEJADORES DE IA (CORREGIDOS A MINÚSCULAS PARA EVITAR ERROR 400)
   // ============================================================
 
   const analyzeSymptoms = async () => {
     if (!symptoms.trim()) return;
-    setIsLoading(true); setError(''); setAiRecommendation(null);
+    setIsLoading(true);
+    setError('');
+    setAiRecommendation(null);
+
     const prompt = `Actúa como un orientador médico empático de la Clínica San Juan de Dios Arequipa. Un paciente describe estos síntomas: "${symptoms}". Sugiere la especialidad médica más adecuada de esta lista: Medicina General, Pediatría, Cardiología, Gastroenterología, Traumatología, Ginecología, Neurología, Otorrinolaringología. Explica de manera breve, empática y en español por qué sugieres esta especialidad (máximo 2 líneas) invitándolo a agendar. NUNCA des un diagnóstico médico real.`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { especialidad: { type: "STRING" }, explicacion: { type: "STRING" } }, required: ["especialidad", "explicacion"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          especialidad: { type: "string" },
+          explicacion: { type: "string" }
+        },
+        required: ["especialidad", "explicacion"]
+      });
       setAiRecommendation(result);
-    } catch { setError("No pudimos procesar tu consulta. Por favor contáctanos vía WhatsApp."); }
+    } catch {
+      setError("No pudimos procesar tu consulta en este momento. Por favor contáctanos vía WhatsApp para orientarte.");
+    }
     setIsLoading(false);
   };
 
   const generatePrepList = async () => {
     if (!prepReason.trim() || !prepSpecialty) return;
-    setIsPrepLoading(true); setPrepError(''); setPrepResult(null);
-    const prompt = `Actúa como asistente de la Clínica San Juan de Dios Arequipa. Paciente va a cita de ${prepSpecialty} por "${prepReason}". Genera lista de preparación: 1) Documentos médicos a llevar. 2) 3 preguntas clave para el médico. 3) Un breve consejo final empático en español.`;
+    setIsPrepLoading(true);
+    setPrepError('');
+    setPrepResult(null);
+
+    const prompt = `Actúa como un asistente de atención al paciente de la Clínica San Juan de Dios Arequipa. Un paciente va a asistir a una cita de la especialidad de ${prepSpecialty} por el siguiente motivo: "${prepReason}". Genera una lista de preparación para su cita que incluya: 1) Documentos médicos que debería llevar (ej. exámenes de sangre previos, placas, lista de pastillas, etc). 2) Tres preguntas clave e inteligentes que el paciente debería hacerle al médico durante la consulta para aprovechar el tiempo. 3) Un breve consejo final empático en español.`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { documentos: { type: "ARRAY", items: { type: "STRING" } }, preguntas: { type: "ARRAY", items: { type: "STRING" } }, consejo: { type: "STRING" } }, required: ["documentos", "preguntas", "consejo"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          documentos: { type: "array", items: { type: "string" } },
+          preguntas: { type: "array", items: { type: "string" } },
+          consejo: { type: "string" }
+        },
+        required: ["documentos", "preguntas", "consejo"]
+      });
       setPrepResult(result);
-    } catch { setPrepError("No pudimos generar tu lista en este momento."); }
+    } catch {
+      setPrepError("No pudimos generar tu lista de preparación en este momento. Por favor, intenta de nuevo.");
+    }
     setIsPrepLoading(false);
   };
 
   const explainMedicalTerm = async () => {
     if (!medicalTerm.trim()) return;
-    setIsTermLoading(true); setTermError(''); setTermExplanation(null);
-    const prompt = `Actúa como educador en salud de la Clínica San Juan de Dios Arequipa. Explica el término médico "${medicalTerm}" en un lenguaje muy sencillo, cotidiano y tranquilizador (máximo 3 líneas). No des diagnósticos. Añade nota recomendando consultar con su médico.`;
+    setIsTermLoading(true);
+    setTermError('');
+    setTermExplanation(null);
+
+    const prompt = `Actúa como un educador en salud sumamente empático de la Clínica San Juan de Dios Arequipa. Un paciente está ansioso porque no entiende el siguiente término médico de sus recetas o exámenes: "${medicalTerm}". Explica qué significa este término en un lenguaje muy sencillo, cotidiano y tranquilizador (máximo 3 líneas). NUNCA des diagnósticos médicos. Añade una nota final recomendando consultar los resultados con su médico tratante.`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { categoria: { type: "STRING", description: "Ej: Examen, Condición" }, explicacion: { type: "STRING" } }, required: ["categoria", "explicacion"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          categoria: { type: "string", description: "Ej: Examen, Condición, Anatomía, Tratamiento" },
+          explicacion: { type: "string" }
+        },
+        required: ["categoria", "explicacion"]
+      });
       setTermExplanation(result);
-    } catch { setTermError("Ocurrió un error al intentar explicar el término."); }
+    } catch {
+      setTermError("Ocurrió un error al intentar explicar el término. Por favor, intenta nuevamente.");
+    }
     setIsTermLoading(false);
   };
 
   const generatePreventivePlan = async () => {
     if (!prevAge || !prevGender) return;
-    setIsPrevLoading(true); setPrevError(''); setPrevResult(null);
-    const prompt = `Médico preventivo de Clínica San Juan de Dios. Paciente ${prevAge} años, ${prevGender}, antecedentes: "${prevHistory}". Sugiere 3 exámenes preventivos este año, nombre y razón breve (1 línea). Incluye mensaje motivador. Aclara que es guía general.`;
+    setIsPrevLoading(true);
+    setPrevError('');
+    setPrevResult(null);
+
+    const prompt = `Actúa como un médico preventivo muy empático de la Clínica San Juan de Dios Arequipa. Un paciente tiene ${prevAge} años, género ${prevGender}, y los siguientes antecedentes familiares o hábitos: "${prevHistory || 'Ninguno en particular'}". Sugiere estrictamente 3 exámenes médicos de rutina o chequeos preventivos que debería considerar este año. Para cada uno, da el nombre del examen y una breve justificación (1 línea) de por qué es importante a su edad. Incluye un mensaje motivador final. Aclara sutilmente que es una guía preventiva general.`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { examenes: { type: "ARRAY", items: { type: "OBJECT", properties: { nombre: { type: "STRING" }, razon: { type: "STRING" } } } }, mensaje: { type: "STRING" } }, required: ["examenes", "mensaje"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          examenes: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                nombre: { type: "string" },
+                razon: { type: "string" }
+              }
+            }
+          },
+          mensaje: { type: "string" }
+        },
+        required: ["examenes", "mensaje"]
+      });
       setPrevResult(result);
-    } catch { setPrevError("No pudimos generar tu plan preventivo."); }
+    } catch {
+      setPrevError("No pudimos generar tu plan preventivo. Por favor, intenta de nuevo.");
+    }
     setIsPrevLoading(false);
   };
 
   const generateNutriGuide = async () => {
     if (!nutriCondition.trim()) return;
-    setIsNutriLoading(true); setNutriError(''); setNutriResult(null);
-    const prompt = `Nutricionista clínico de Clínica San Juan de Dios. Recomendaciones alimentarias para: "${nutriCondition}". Devuelve: 3 alimentos recomendados, 3 a evitar, consejo de estilo de vida (2 líneas) y disclaimer para agendar cita.`;
+    setIsNutriLoading(true);
+    setNutriError('');
+    setNutriResult(null);
+
+    const prompt = `Actúa como un nutricionista clínico empático de la Clínica San Juan de Dios Arequipa. Un paciente busca recomendaciones alimentarias generales para la siguiente condición, síntoma o situación de salud: "${nutriCondition}". Proporciona una guía nutricional básica en español. Devuelve SOLO un objeto JSON con: "recomendados" (lista de 3 alimentos o grupos de alimentos recomendados), "evitar" (lista de 3 alimentos o grupos a evitar), "consejo" (un consejo de estilo de vida en 2 líneas), y "disclaimer" (recordatorio breve y amable de agendar cita médica).`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { recomendados: { type: "ARRAY", items: { type: "STRING" } }, evitar: { type: "ARRAY", items: { type: "STRING" } }, consejo: { type: "STRING" }, disclaimer: { type: "STRING" } }, required: ["recomendados", "evitar", "consejo", "disclaimer"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          recomendados: { type: "array", items: { type: "string" } },
+          evitar: { type: "array", items: { type: "string" } },
+          consejo: { type: "string" },
+          disclaimer: { type: "string" }
+        },
+        required: ["recomendados", "evitar", "consejo", "disclaimer"]
+      });
       setNutriResult(result);
-    } catch { setNutriError("No pudimos generar la guía nutricional."); }
+    } catch {
+      setNutriError("No pudimos generar la guía nutricional en este momento. Intenta de nuevo.");
+    }
     setIsNutriLoading(false);
   };
 
   const generateMaternityGuide = async () => {
     if (!pregWeeks) return;
-    setIsPregLoading(true); setPregError(''); setPregResult(null);
-    const prompt = `Acompañante maternal empático Clínica San Juan de Dios. Mamá con ${pregWeeks} semanas de embarazo se siente: "${pregFeeling}". Genera guía: "tamano_bebe" (ej: fruta), "desarrollo" (1 línea), "consejo" (basado en cómo se siente), y "pregunta_medico".`;
+    setIsPregLoading(true);
+    setPregError('');
+    setPregResult(null);
+
+    const prompt = `Actúa como un obstetra y acompañante maternal muy empático de la Clínica San Juan de Dios Arequipa. Una futura mamá tiene ${pregWeeks} semanas de embarazo y menciona que se siente: "${pregFeeling || 'emocionada pero con dudas'}". Genera una guía rápida y cálida. Devuelve SOLO un objeto JSON con: "tamano_bebe" (ej: 'El bebé tiene el tamaño de un limón'), "desarrollo" (1 línea sobre qué se está desarrollando en el bebé esta semana), "consejo" (consejo empático y práctico para la madre basado en cómo se siente), y "pregunta_medico" (una pregunta inteligente para hacerle a su obstetra en su próximo control).`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { tamano_bebe: { type: "STRING" }, desarrollo: { type: "STRING" }, consejo: { type: "STRING" }, pregunta_medico: { type: "STRING" } }, required: ["tamano_bebe", "desarrollo", "consejo", "pregunta_medico"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          tamano_bebe: { type: "string" },
+          desarrollo: { type: "string" },
+          consejo: { type: "string" },
+          pregunta_medico: { type: "string" }
+        },
+        required: ["tamano_bebe", "desarrollo", "consejo", "pregunta_medico"]
+      });
       setPregResult(result);
-    } catch { setPregError("No pudimos conectar con tu acompañante maternal."); }
+    } catch {
+      setPregError("No pudimos conectar con tu acompañante maternal. Por favor, intenta de nuevo.");
+    }
     setIsPregLoading(false);
   };
 
   const generatePediatricGuide = async () => {
     if (!pedAge || !pedMilestone.trim()) return;
-    setIsPedLoading(true); setPedError(''); setPedResult(null);
-    const prompt = `Pediatra empático Clínica San Juan de Dios. Hijo de "${pedAge}". Novedad/Preocupación: "${pedMilestone}". Genera: "desarrollo" (explicación breve de lo normal), "actividad" (tip en casa), y "consejo_medico" (sugerir control).`;
+    setIsPedLoading(true);
+    setPedError('');
+    setPedResult(null);
+
+    const prompt = `Actúa como un pediatra empático de la Clínica San Juan de Dios Arequipa. Un padre/madre tiene un hijo de "${pedAge}" de edad y comenta lo siguiente sobre su desarrollo o comportamiento: "${pedMilestone}". Genera una guía rápida y tranquilizadora. Devuelve SOLO un objeto JSON con: "desarrollo" (explicación breve de lo que es normal a esta edad respecto a lo que comenta), "actividad" (un juego, tip o consejo práctico para estimularlo o ayudarlo en casa), y "consejo_medico" (recomendación amable de agendar su control de 'Niño Sano' o cita pediátrica).`;
+
     try {
-      const result = await fetchGemini(prompt, { type: "OBJECT", properties: { desarrollo: { type: "STRING" }, actividad: { type: "STRING" }, consejo_medico: { type: "STRING" } }, required: ["desarrollo", "actividad", "consejo_medico"] });
+      const result = await fetchGemini(prompt, {
+        type: "object",
+        properties: {
+          desarrollo: { type: "string" },
+          actividad: { type: "string" },
+          consejo_medico: { type: "string" }
+        },
+        required: ["desarrollo", "actividad", "consejo_medico"]
+      });
       setPedResult(result);
-    } catch { setPedError("No pudimos conectar con el asistente pediátrico."); }
+    } catch {
+      setPedError("No pudimos conectar con el asistente pediátrico. Por favor, intenta de nuevo.");
+    }
     setIsPedLoading(false);
   };
 
@@ -376,7 +515,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 5.5 AI SYMPTOM CHECKER */}
+        {/* 5.5 AI SYMPTOM CHECKER (Gemini API) */}
         <section className="py-12 bg-gradient-to-b from-teal-700 to-teal-800 border-t border-teal-600/50 relative overflow-hidden">
           <div className="absolute -right-20 -top-20 opacity-10">
             <Bot size={200} />
@@ -563,7 +702,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7.5 AI APPOINTMENT PREP */}
+        {/* 7.5 AI APPOINTMENT PREP (Gemini API) */}
         <section className="py-16 md:py-24 bg-slate-50 border-t border-gray-100 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-3xl shadow-xl p-8 border border-teal-100 relative overflow-hidden">
@@ -675,7 +814,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7.75 AI MEDICAL DICTIONARY */}
+        {/* 7.75 AI MEDICAL DICTIONARY (Gemini API) */}
         <section className="py-16 bg-white border-t border-gray-100">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row items-center gap-8">
@@ -697,7 +836,7 @@ export default function App() {
                       value={medicalTerm}
                       onChange={(e) => setMedicalTerm(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && explainMedicalTerm()}
-                      placeholder="Ej: Ecografía Doppler, Leucocitos..."
+                      placeholder="Ej: Ecografía Doppler, Leucocitos, Hemodinamia..."
                       className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none font-medium text-gray-700"
                     />
                   </div>
@@ -748,7 +887,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7.85 AI PREVENTIVE HEALTH PLANNER */}
+        {/* 7.85 AI PREVENTIVE HEALTH PLANNER (Gemini API) */}
         <section className="py-16 md:py-24 bg-gradient-to-br from-indigo-50 via-white to-teal-50 border-t border-gray-100 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -878,7 +1017,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7.9 AI NUTRITION & RECOVERY GUIDE */}
+        {/* 7.9 AI NUTRITION & RECOVERY GUIDE (Gemini API) */}
         <section className="py-16 md:py-24 bg-white border-t border-gray-100 relative overflow-hidden">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-10">
@@ -970,7 +1109,7 @@ export default function App() {
                 <div className="bg-gray-50 border border-gray-200 p-4 rounded-xl flex items-start gap-3">
                   <Info size={18} className="text-gray-500 shrink-0 mt-0.5" />
                   <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                    {nutriResult.disclaimer}
+                    {nutriResult.disclaimer} Para recibir un plan nutricional 100% adaptado a tus necesidades fisiológicas, te recomendamos agendar una cita con nuestra especialidad de Nutrición.
                   </p>
                 </div>
               </div>
@@ -978,7 +1117,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7.95 AI MATERNITY COMPANION */}
+        {/* 7.95 AI MATERNITY COMPANION (Gemini API) */}
         <section className="py-16 md:py-24 bg-rose-50 border-t border-rose-100 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-40 pointer-events-none">
             <div className="absolute -top-24 -left-24 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
@@ -1102,7 +1241,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7.98 AI PEDIATRIC ASSISTANT */}
+        {/* 7.98 AI PEDIATRIC ASSISTANT (Gemini API) */}
         <section className="py-16 md:py-24 bg-sky-50 border-t border-sky-100 relative overflow-hidden">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="flex flex-col md:flex-row gap-12 items-center">
@@ -1281,6 +1420,7 @@ export default function App() {
                 </li>
               </ul>
               <div className="mt-6 flex gap-4">
+                {/* Social Placeholders */}
                 <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-teal-600 transition cursor-pointer">f</div>
                 <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-teal-600 transition cursor-pointer">in</div>
                 <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-teal-600 transition cursor-pointer">ig</div>
@@ -1297,7 +1437,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 10. STICKY MOBILE NAV */}
+      {/* 10. STICKY MOBILE NAV (Bottom CTA Strategy) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 flex gap-2 z-50 pb-safe">
         <a
           href={phoneLink}
@@ -1317,6 +1457,7 @@ export default function App() {
         </a>
       </div>
 
+      {/* Estilo para asegurar que en dispositivos iOS con barra inferior haya margen */}
       <style dangerouslySetInnerHTML={{__html: `
         .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
       `}} />
