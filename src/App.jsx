@@ -30,6 +30,8 @@ import {
   Star,
   Smile
 } from 'lucide-react';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 
 export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -95,64 +97,35 @@ export default function App() {
   const phoneLink = "tel:054382400";
   const mapLink = "https://maps.google.com/?q=Av.+Ejército+1020,+Cayma,+Arequipa";
 
-  const analyzeSymptoms = async () => {
+    const analyzeSymptoms = async () => {
     if (!symptoms.trim()) return;
     setIsLoading(true);
     setError('');
     setAiRecommendation(null);
 
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    const promptText = `Actúa como un orientador médico empático de la Clínica San Juan de Dios Arequipa. Un paciente describe estos síntomas: "${symptoms}". Sugiere la especialidad médica más adecuada de esta lista: Medicina General, Pediatría, Cardiología, Gastroenterología, Traumatología, Ginecología, Neurología, Otorrinolaringología. Explica de manera breve, empática y en español por qué sugieres esta especialidad (máximo 2 líneas) invitándolo a agendar. NUNCA des un diagnóstico médico real.`;
+    try {
+      // 1. Inicializamos la IA con la llave de Vercel
+      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-    let retries = 5;
-    let delay = 1000;
-    let success = false;
+      // 2. Definimos el prompt
+      const promptText = `Actúa como un orientador médico empático de la Clínica San Juan de Dios Arequipa. Un paciente describe estos síntomas: "${symptoms}". Sugiere la especialidad médica adecuada (Medicina General, Pediatría, Cardiología, Gastroenterología, Traumatología, Ginecología, Neurología, Otorrinolaringología). Explica por qué brevemente. Devuelve un JSON válido con formato: {"especialidad": "nombre", "explicacion": "razon"}`;
 
-    while (retries > 0 && !success) {
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }],
-            generationConfig: {
-              responseMimeType: "application/json",
-              responseSchema: {
-                type: "OBJECT",
-                properties: {
-                  especialidad: { type: "STRING" },
-                  explicacion: { type: "STRING" }
-                },
-                required: ["especialidad", "explicacion"]
-              }
-            }
-          })
-        });
+      // 3. Llamamos a la API
+      const result = await model.generateContent(promptText);
+      const responseText = result.response.text();
 
-        if (!response.ok) throw new Error('API Error');
-        const data = await response.json();
-        const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      // Limpiamos la respuesta en caso de que traiga comillas de Markdown
+      const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '');
 
-        if (jsonText) {
-          setAiRecommendation(JSON.parse(jsonText));
-          success = true;
-        } else {
-           throw new Error('Invalid response form API');
-        }
-      } catch (err) {
-        retries--;
-        if (retries === 0) {
-          setError("Lo sentimos, en este momento no pudimos procesar tu consulta. Por favor contáctanos directamente vía WhatsApp para orientarte.");
-        } else {
-          await sleep(delay);
-          delay *= 2;
-        }
-      }
+      setAiRecommendation(JSON.parse(cleanJson));
+
+    } catch (err) {
+      console.error(err);
+      setError("Lo sentimos, no pudimos procesar tu consulta en este momento.");
     }
     setIsLoading(false);
   };
-
   const generatePrepList = async () => {
     if (!prepReason.trim() || !prepSpecialty) return;
     setIsPrepLoading(true);
